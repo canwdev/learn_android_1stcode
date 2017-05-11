@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">示例1</string>
+    <string name="action_settings">退出</string>
+    <string name="hello_world">当我第一次听到要说 Hello world! 时，其实我是拒绝的。因为你不能让我说，我就说，首先我要试一下。</string>
+
+</resources>

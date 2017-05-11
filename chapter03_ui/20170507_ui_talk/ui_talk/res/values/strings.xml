@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ui_talk_test</string>
+    <string name="hello_world">fine</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
