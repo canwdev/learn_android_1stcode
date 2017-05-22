@@ -13,4 +13,11 @@
         android:text="This is right fragment"
         android:textSize="20sp" />
 
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/screen_size" />
+
 </LinearLayout>
