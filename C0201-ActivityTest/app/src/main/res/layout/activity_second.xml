@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button2 关闭" />
+
+    <Button
+        android:id="@+id/button_go2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Go v2" />
+
+    <Button
+        android:id="@+id/button_www"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="调用浏览器打开网址" />
+
+    <Button
+        android:id="@+id/button_call"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="调用拨号程序（打Call）" />
+
+
+</LinearLayout>
