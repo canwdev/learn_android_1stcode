@@ -26,7 +26,7 @@
             android:name=".SecondActivityV2"
             android:label="隐式Intent - SecondActivityV2">
             <intent-filter>
-                <action android:name="com.example.activitytest.ACTION_START" />
+                <action android:name="com.example.activitytest.V2_ACTION_START" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="com.example.activitytest.MY_CATEGORY" />
             </intent-filter>

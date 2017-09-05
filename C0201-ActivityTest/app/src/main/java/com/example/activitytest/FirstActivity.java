@@ -3,6 +3,7 @@ package com.example.activitytest;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.FitWindowsFrameLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,7 +45,13 @@ public class FirstActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // 启动显式Activity
+                /* Intent intent = new Intent(FirstActivity.this, SecondActivity.class);
+                startActivity(intent); */
+
+                // 启动显式Activity，并向下一个活动传递数据
+                String data = "Hello SecondActivity!";
                 Intent intent = new Intent(FirstActivity.this, SecondActivity.class);
+                intent.putExtra("extra_data", data);
                 startActivity(intent);
             }
         });

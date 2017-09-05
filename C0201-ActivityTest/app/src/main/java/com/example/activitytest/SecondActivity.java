@@ -7,16 +7,34 @@ import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 public class SecondActivity extends AppCompatActivity {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    String returnedData = data.getStringExtra("data_return");
+                    Log.d("SecondActivity", "onActivityResult: "+ returnedData);
+                }
+                break;
+            default:
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
+
+        // 接收FirstActivity传来的数据
+        Intent intent = getIntent();
+        String data = intent.getStringExtra("extra_data");
+        Log.d("SecondActivity" , "onCreate: "+data);
 
         Button button2 = (Button) findViewById(R.id.button2);
         Button buttonGo2 = (Button) findViewById(R.id.button_go2);
@@ -33,10 +51,15 @@ public class SecondActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // 启动隐式Activity
-                Intent intent = new Intent("com.example.activitytest.ACTION_START");
+                Intent intent = new Intent("com.example.activitytest.V2_ACTION_START");
+
                 // 可以指定多个Category
-                // Sintent.addCategory("com.example.activitytest.MY_CATEGORY");
-                startActivity(intent);
+                /* Sintent.addCategory("com.example.activitytest.MY_CATEGORY"); */
+
+                //- startActivity(intent);
+
+                // Activity返回数据给上一个活动（即本活动）
+                startActivityForResult(intent, 1);
             }
         });
         buttonWww.setOnClickListener(new View.OnClickListener() {
