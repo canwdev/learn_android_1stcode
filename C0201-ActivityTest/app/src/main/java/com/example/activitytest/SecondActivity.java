@@ -31,6 +31,9 @@ public class SecondActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
+        // TaskID 返回栈ID
+        Log.d("SecondActivity", "TaskID: "+getTaskId());
+
         // 接收FirstActivity传来的数据
         Intent intent = getIntent();
         String data = intent.getStringExtra("extra_data");
@@ -38,6 +41,8 @@ public class SecondActivity extends AppCompatActivity {
 
         Button button2 = (Button) findViewById(R.id.button2);
         Button buttonGo2 = (Button) findViewById(R.id.button_go2);
+        Button buttonGo3 = (Button) findViewById(R.id.button_go3);
+        Button buttonRe = (Button) findViewById(R.id.button_re);
         Button buttonWww = (Button) findViewById(R.id.button_www);
         Button buttonCall = (Button) findViewById(R.id.button_call);
 
@@ -47,6 +52,7 @@ public class SecondActivity extends AppCompatActivity {
                 finish();
             }
         });
+
         buttonGo2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,6 +68,24 @@ public class SecondActivity extends AppCompatActivity {
                 startActivityForResult(intent, 1);
             }
         });
+
+        buttonGo3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 启动隐式Activity
+                Intent intent = new Intent(SecondActivity.this, ThirdActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        buttonRe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SecondActivity.this, FirstActivity.class);
+                startActivity(intent);
+            }
+        });
+
         buttonWww.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,6 +95,7 @@ public class SecondActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         buttonCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

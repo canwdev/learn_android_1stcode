@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.FitWindowsFrameLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,13 +16,20 @@ public class FirstActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // 给当前活动加载布局
         setContentView(R.layout.activity_first);
+
+        // Activity ID
+        Log.d("FirstActivity", this.toString());
+
+        // TaskID 返回栈ID
+        Log.d("FirstActivity", "TaskID: "+getTaskId());
 
         // 获取按钮
         Button button1 = (Button) findViewById(R.id.button1);
         Button buttonGo = (Button) findViewById(R.id.button_go);
+        Button buttonRe = (Button) findViewById(R.id.button_re);
+
         // 设置按钮点击监听器
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +60,14 @@ public class FirstActivity extends AppCompatActivity {
                 String data = "Hello SecondActivity!";
                 Intent intent = new Intent(FirstActivity.this, SecondActivity.class);
                 intent.putExtra("extra_data", data);
+                startActivity(intent);
+            }
+        });
+
+        buttonRe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(FirstActivity.this, FirstActivity.class);
                 startActivity(intent);
             }
         });

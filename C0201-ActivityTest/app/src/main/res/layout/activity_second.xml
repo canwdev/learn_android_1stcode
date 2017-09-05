@@ -7,13 +7,25 @@
         android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button2 关闭" />
+        android:text="finish()" />
 
     <Button
         android:id="@+id/button_go2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go v2" />
+        android:text="Start SecondActivity v2" />
+
+    <Button
+        android:id="@+id/button_go3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start ThirdActivity" />
+
+    <Button
+        android:id="@+id/button_re"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start FirstActivity" />
 
     <Button
         android:id="@+id/button_www"

@@ -9,6 +9,6 @@
         android:layout_height="wrap_content"
         android:background="@android:drawable/edit_text"
         android:onClick="finishClick"
-        android:text="Button2 关闭" />
+        android:text="finish()" />
 
 </LinearLayout>

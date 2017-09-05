@@ -12,6 +12,12 @@
     <Button
         android:id="@+id/button_go"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Go to Second Activity" />
+        android:layout_height="wrap_content"
+        android:text="Start SecondActivity" />
+
+    <Button
+        android:id="@+id/button_re"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Re:Start FirstActivity" />
 </LinearLayout>

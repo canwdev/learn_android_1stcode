@@ -12,6 +12,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".FirstActivity"
+            android:launchMode="singleTask"
             android:label="ActivityTest (FirstActivity)">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +22,7 @@
         </activity>
         <activity
             android:name=".SecondActivity"
+            android:launchMode="singleInstance"
             android:label="显式Intent - SecondActivity" />
         <activity
             android:name=".SecondActivityV2"
