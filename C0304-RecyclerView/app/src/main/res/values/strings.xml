@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RecyclerView</string>
+    <string name="title_grid">网格布局TEST (Grid Layout)</string>
+    <string name="title_staggered_grid">瀑布流 (Staggered Grid)</string>
 </resources>

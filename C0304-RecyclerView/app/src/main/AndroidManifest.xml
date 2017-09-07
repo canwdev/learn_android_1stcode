@@ -16,6 +16,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivityStaggeredGrid"
+            android:label="@string/title_staggered_grid"/>
+        <activity
+            android:name=".MainActivityGrid"
+            android:label="@string/title_grid"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
