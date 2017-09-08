@@ -1,13 +1,19 @@
 package com.example.uibestpractice;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +35,49 @@ public class MainActivity extends AppCompatActivity {
         msgList.add(msg3);
     }
 
+    private void ClearChatList() {
+        msgList.clear();
+        msgAdapter.notifyDataSetChanged();
+        Toast.makeText(MainActivity.this, "Chat list Cleared", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.item_clear:
+                // 新建弹出对话框
+                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                dialog.setTitle(android.R.string.dialog_alert_title);
+                dialog.setMessage("Are you sure clear chat list?");
+                dialog.setPositiveButton(android.R.string.ok , new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ClearChatList();
+                    }
+                });
+                dialog.setNegativeButton(android.R.string.cancel , new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+                dialog.show();
+
+                break;
+            case R.id.item_new:
+                finish();
+                break;
+            default:
+        }
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
         msgText = (EditText) findViewById(R.id.text_message);
         sendButton = (Button) findViewById(R.id.button_sent);
-        msgRecyclerView = (RecyclerView) findViewById(R.id.cheat_area);
+        msgRecyclerView = (RecyclerView) findViewById(R.id.chat_area);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(layoutManager);
         msgAdapter = new MessageAdapter(msgList);
@@ -52,8 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 String content = msgText.getText().toString();
                 if (!"".equals(content)) {
                     if ("//clear".equals(content)) {
-                        msgList.clear();
-                        msgAdapter.notifyDataSetChanged();
+                        ClearChatList();
                     } else {
                         Message msg = new Message(content, Message.TYPE_SENT);
                         msgList.add(msg);
