@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Wallpaper Tool</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="dont_have_app_to_open_file">No app to open this file</string>
+</resources>

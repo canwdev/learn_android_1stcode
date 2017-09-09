@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">壁纸工具</string>
+    <string name="action_refresh">刷新</string>
+    <string name="dont_have_app_to_open_file">未找到打开此文件的相关应用</string>
+</resources>
