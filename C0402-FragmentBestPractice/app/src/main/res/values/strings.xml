@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Fragment Best Practice</string>
+    <string name="news_sample_title">Lorem Ipsum</string>
+    <string name="news_sample_content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus et faucibus enim. Aenean ut rutrum mi. Aliquam augue lectus, pharetra fermentum blandit id, accumsan et nisi. Nunc gravida tempus dolor eget faucibus. Proin tempus commodo venenatis. Ut vel dignissim nibh, vel vehicula sem. Duis nisl libero, maximus a orci id, auctor bibendum quam. Cras auctor arcu vitae ornare maximus. Ut volutpat eros vitae fringilla scelerisque.</string>
+</resources>
