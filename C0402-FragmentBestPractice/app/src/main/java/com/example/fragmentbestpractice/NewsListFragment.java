@@ -26,6 +26,7 @@ public class NewsListFragment extends Fragment {
 
         RecyclerView newsListRView = (RecyclerView) view.findViewById(R.id.news_list_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setSmoothScrollbarEnabled(true);
         newsListRView.setLayoutManager(layoutManager);
         NewsAdapter adapter = new NewsAdapter(getNews());
         newsListRView.setAdapter(adapter);
@@ -36,12 +37,20 @@ public class NewsListFragment extends Fragment {
         List<News> newsList = new ArrayList<>();
         for (int i = 1; i <= 30; i++) {
             News news = new News();
-            news.setTitle(i+". "+ getResources().getString(R.string.news_sample_title));
-            news.setContent(
-                    getResources().getString(R.string.news_sample_content)+
-                    getResources().getString(R.string.news_sample_content)+
-                    getResources().getString(R.string.news_sample_content)
-            );
+            if (i % 2 != 0) {
+                news.setTitle(i + ". " + getResources().getString(R.string.news_sample_title));
+                news.setContent(
+                        getResources().getString(R.string.news_sample_content) +
+                                getResources().getString(R.string.news_sample_content)
+                );
+            } else {
+                news.setTitle(i + ". " + getResources().getString(R.string.news_sample_title2));
+                news.setContent(
+                        getResources().getString(R.string.news_sample_content2) +
+                                getResources().getString(R.string.news_sample_content2) +
+                                getResources().getString(R.string.news_sample_content2)
+                );
+            }
             newsList.add(news);
         }
         return newsList;
@@ -64,10 +73,12 @@ public class NewsListFragment extends Fragment {
 
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView newsTitleText;
+            TextView lineView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 newsTitleText = (TextView) itemView.findViewById(R.id.news_list_title);
+                lineView = (TextView) itemView.findViewById(R.id.line_view);
             }
         }
 

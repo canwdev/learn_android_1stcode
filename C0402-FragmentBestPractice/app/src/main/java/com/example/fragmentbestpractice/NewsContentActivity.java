@@ -2,7 +2,6 @@ package com.example.fragmentbestpractice;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.IntegerRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -14,13 +13,14 @@ public class NewsContentActivity extends AppCompatActivity {
         Intent intent = new Intent(context, NewsContentActivity.class);
         intent.putExtra("news_title", newsTitle);
         intent.putExtra("news_content", newsContent);
+
         context.startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news_content);
+        setContentView(R.layout.news_content_activity);
 
         // 接收Intent数据
         String newsTitle = getIntent().getStringExtra("news_title");
