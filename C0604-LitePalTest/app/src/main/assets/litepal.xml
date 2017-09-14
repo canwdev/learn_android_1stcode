@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <!--数据库名-->
+    <dbname value="BookStore" />
+    <!--数据库版本-->
+    <version value="2" />
+    <!--配置要映射（对象关系映射ORM）的模型类-->
+    <list>
+        <mapping class="com.example.litepaltest.Book"></mapping>
+        <mapping class="com.example.litepaltest.Category"></mapping>
+    </list>
+
+</litepal>
