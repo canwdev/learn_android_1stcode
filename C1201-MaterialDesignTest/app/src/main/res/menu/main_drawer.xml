@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_settings"
+            android:icon="@drawable/ic_settings_white_48dp"
+            android:title="Cog's Home"
+            app:showAsAction="always" />
+        <item
+            android:id="@+id/item_backup"
+            android:icon="@drawable/ic_backup_white_48dp"
+            android:title="Cloud Storage"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/item_delete"
+            android:icon="@drawable/ic_delete_white_48dp"
+            android:title="Recycle Bin"
+            app:showAsAction="never" />
+    </group>
+
+    <item android:title="About">
+        <menu>
+            <item
+                android:id="@+id/drawer_item_github"
+                android:icon="@drawable/ic_menu_white_48dp"
+                android:title="Github" />
+        </menu>
+    </item>
+</menu>
