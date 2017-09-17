@@ -6,17 +6,15 @@
         <item
             android:id="@+id/item_settings"
             android:icon="@drawable/ic_settings_white_48dp"
-            android:title="Cog's Home"
-            app:showAsAction="always" />
+            android:title="Home" />
         <item
-            android:id="@+id/item_backup"
+            android:id="@+id/drawer_item_backup"
             android:icon="@drawable/ic_backup_white_48dp"
-            android:title="Cloud Storage"
-            app:showAsAction="ifRoom" />
+            android:title="Cloud Fruits" />
         <item
             android:id="@+id/item_delete"
             android:icon="@drawable/ic_delete_white_48dp"
-            android:title="Recycle Bin"
+            android:title="Recycle"
             app:showAsAction="never" />
     </group>
 
