@@ -4,6 +4,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="This is a content provider.\ncontent://com.example.databasetest.provider/"
+        android:textSize="18sp" />
+
     <Button
         android:id="@+id/button_createDb"
         android:layout_width="match_parent"

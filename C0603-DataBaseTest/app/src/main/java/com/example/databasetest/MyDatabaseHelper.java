@@ -37,7 +37,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_BOOK);
         db.execSQL(CREATE_CATEGORY);
-        Toast.makeText(mContext, CREATE_BOOK+"\n\n"+CREATE_CATEGORY, Toast.LENGTH_SHORT).show();
     }
 
     // 当 MyDatabaseHelper的版本号大于上一个版本时执行

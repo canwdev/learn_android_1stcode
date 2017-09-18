@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         // 创建或打开数据库（如果没数据库文件，才会创建）
         dbHelper.getWritableDatabase();
 
-        Toast.makeText(this, "/data/data/" + this.getPackageName() + "/databases/Book.db", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "CREATE complete\n" + "/data/data/" + this.getPackageName() + "/databases/Book.db", Toast.LENGTH_SHORT).show();
     }
 
     public void onDeleteDbClick(View view) {
@@ -99,10 +99,10 @@ public class MainActivity extends AppCompatActivity {
             // 遍历Cursor对象
             do {
                 String oneLineData =
-                        cursor.getString(cursor.getColumnIndex("id")) + " " +
-                                cursor.getString(cursor.getColumnIndex("name")) + " " +
-                                cursor.getString(cursor.getColumnIndex("author")) + " " +
-                                cursor.getString(cursor.getColumnIndex("pages")) + " " +
+                        cursor.getString(cursor.getColumnIndex("id")) + "\t" +
+                                cursor.getString(cursor.getColumnIndex("name")) + "\t" +
+                                cursor.getString(cursor.getColumnIndex("author")) + "\t" +
+                                cursor.getString(cursor.getColumnIndex("pages")) + "\t" +
                                 cursor.getString(cursor.getColumnIndex("price")) + "\n";
                 allData += oneLineData;
             } while (cursor.moveToNext());

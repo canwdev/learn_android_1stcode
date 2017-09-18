@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Test content provider. Work with DataBaseTest.\ncontent://com.example.databasetest.provider/"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/button_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onAddClick"
+                android:text="ADD" />
+
+            <Button
+                android:id="@+id/button_query"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onQueryClick"
+                android:text="QUERY" />
+
+            <Button
+                android:id="@+id/button_update"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onUpdateClick"
+                android:text="UPDATE" />
+
+            <Button
+                android:id="@+id/button_delete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onDeleteClick"
+                android:text="DELETE" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
