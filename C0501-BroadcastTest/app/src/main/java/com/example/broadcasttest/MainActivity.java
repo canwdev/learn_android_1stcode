@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 发送自定义广播（Android 8.0 可能存在问题）
+                // 发送自定义广播（targetSdkVersion 26+可能存在问题）
                 Intent intent = new Intent("com.example.broadcasttest.MY_BROADCAST");
                 // 发送标准广播
 //                sendBroadcast(intent);
