@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Play Media Test</string>
+    <string name="activity_music">Music Test</string>
+    <string name="activity_video">Video Test</string>
+</resources>
