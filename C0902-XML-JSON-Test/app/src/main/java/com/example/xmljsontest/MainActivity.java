@@ -8,7 +8,9 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
+    // 10.0.2.2 表示Android模拟器的主机地址 127.0.0.1
     public static final String URL_XML = "http://10.0.2.2/get_data.xml";
+    public static final String URL_JSON = "http://10.0.2.2/get_data.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

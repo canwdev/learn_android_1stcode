@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">XML JSON Test</string>
-    <string name="how_to_test">Start a web server, then put /res/raw/* file here \n http://127.0.0.1/get_data.xml \n http://127.0.0.1/get_data.json</string>
+    <string name="how_to_test">Start a web server, then put /res/raw/* file below: \n http://127.0.0.1/get_data.xml \n http://127.0.0.1/get_data.json</string>
     <string name="xml">XML</string>
     <string name="json">JSON</string>
 </resources>
