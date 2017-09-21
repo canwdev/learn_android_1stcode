@@ -1,5 +1,6 @@
 package com.example.wallpapertool;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.app.WallpaperManager;
 import android.content.pm.PackageManager;
@@ -9,8 +10,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -29,10 +30,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.jar.Manifest;
-
-import static android.R.attr.id;
-import static android.R.attr.permission;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,67 +46,73 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // suffix == ".png" || ".jpg"
-    public void saveWallpaper(String suffix) {
+    public void saveWallpaper(final String suffix) {
 
-        String permission = "android.permission.WRITE_EXTERNAL_STORAGE";
-        int PERMISSION_REQUEST_CODE = 10;
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ContextCompat.checkSelfPermission(this, permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-//当前Activity没有获得权限时
-                ActivityCompat.requestPermissions(this, new String[]{permission}, PERMISSION_REQUEST_CODE);
-            } else {
-//否则已允许
-            }
-        }
+        // 等待框，UI。
+        mDialog = ProgressDialog.show(
+                MainActivity.this, "正在保存" + suffix + "格式图片",
+                "Saving wallpaper，请稍等...", true, false);
 
-        String savePath = Environment.getExternalStorageDirectory().getPath() + "/Pictures/";
-        //String picName = getSystemWallpaper().getConfig().toString() + suffix;
+        // 开线程运行耗时的逻辑
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 在子线程中更新UI，防止崩溃
+                Looper.prepare();
 
-        // 将时间设为文件名
-        SimpleDateFormat timesdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String FileTime = timesdf.format(new Date()).toString();//获取系统时间
-        String filename = FileTime.replace(":", "").replace("-", "").replace(" ", "");
-        String picName = "Wallpaper_" + filename + suffix;
+                String savePath = Environment.getExternalStorageDirectory().getPath() + "/Pictures/";
+                //String picName = getSystemWallpaper().getConfig().toString() + suffix;
 
-        // 保存壁纸
-        try {
-            final File f = new File(savePath, picName);
-            if (f.exists()) {
-                Snackbar.make(wallpaperView, "文件已存在", Snackbar.LENGTH_SHORT)
-                        .setAction("Delete!", new View.OnClickListener() {
+                // 将时间设为文件名
+                SimpleDateFormat timesdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String FileTime = timesdf.format(new Date()).toString();//获取系统时间
+                String filename = FileTime.replace(":", "").replace("-", "").replace(" ", "");
+                String picName = "Wallpaper_" + filename + suffix;
+
+                // 保存壁纸
+                try {
+                    final File f = new File(savePath, picName);
+                    if (f.exists()) {
+                        Snackbar.make(wallpaperView, "文件已存在", Snackbar.LENGTH_SHORT)
+                                .setAction("Delete!", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        f.delete();
+                                    }
+                                }).show();
+                    } else {
+                        FileOutputStream out = new FileOutputStream(f);
+                        if (".jpg".equals(suffix)) {
+                            getSystemWallpaper().compress(Bitmap.CompressFormat.JPEG, 90, out);
+                        } else if (".png".equals(suffix)) {
+                            getSystemWallpaper().compress(Bitmap.CompressFormat.PNG, 90, out);
+                        }
+                        out.flush();
+                        out.close();
+
+                        Snackbar sb = Snackbar.make(wallpaperView, "已保存: "
+                                + savePath + picName, Snackbar.LENGTH_LONG);
+                        sb.setAction("OK", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                f.delete();
                             }
                         }).show();
-            } else {
-                FileOutputStream out = new FileOutputStream(f);
-                if (".jpg".equals(suffix)) {
-                    getSystemWallpaper().compress(Bitmap.CompressFormat.JPEG, 90, out);
-                } else if (".png".equals(suffix)) {
-                    getSystemWallpaper().compress(Bitmap.CompressFormat.PNG, 90, out);
-                }
-                out.flush();
-                out.close();
-
-                Snackbar sb = Snackbar.make(wallpaperView, "已保存: "
-                        + savePath + picName, Snackbar.LENGTH_LONG);
-                sb.setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
                     }
-                }).show();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Snackbar.make(wallpaperView, "错误：" + e.getMessage(), Snackbar.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Snackbar.make(wallpaperView
-                    , "错误：" + e.getMessage(), Snackbar.LENGTH_LONG).show();
-        }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    Snackbar.make(wallpaperView, "错误：" + e.getMessage(), Snackbar.LENGTH_LONG).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Snackbar.make(wallpaperView
+                            , "错误：" + e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }
 
+                // 更新UI
+                mDialog.dismiss();
+                Looper.loop();
+            }
+        });
+        t.start();
     }
 
     @Override
@@ -129,24 +132,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                // 等待框
-                mDialog = ProgressDialog.show(
-                        MainActivity.this, "正在保存JPG格式图片",
-                        "Savig wallpaper，请稍等...", true, false);
+                // 检查权限
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    // 弹出系统权限授予
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                } else {
+                    // 权限允许后的逻辑
+                    saveWallpaper(".jpg");
+                }
 
-                // 开线程运行
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 防止报错
-                        Looper.prepare();
-                        saveWallpaper(".jpg");
-
-                        mDialog.dismiss();
-                        Looper.loop();
-                    }
-                });
-                t.start();
             }
         });
 
@@ -154,23 +148,42 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                final ProgressDialog dialog = ProgressDialog.show(
-                        MainActivity.this, "正在保存PNG格式图片",
-                        "Savig wallpaper，请稍等...", true, false);
 
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Looper.prepare();
-                        saveWallpaper(".png");
-                        dialog.dismiss();
-                        Looper.loop();
-                    }
-                });
-                t.start();
+                // 检查权限
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    // 弹出系统权限授予
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                } else {
+                    // 权限允许后的逻辑
+                    saveWallpaper(".png");
+                }
+
                 return true;
             }
         });
+    }
+
+    // 权限检查回调
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    saveWallpaper(".jpg");
+                } else {
+                    Toast.makeText(this, "Permission denied: \n" + Manifest.permission.WRITE_EXTERNAL_STORAGE, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case 2:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    saveWallpaper(".png");
+                } else {
+                    Toast.makeText(this, "Permission denied: \n" + Manifest.permission.WRITE_EXTERNAL_STORAGE, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                break;
+        }
     }
 
 
