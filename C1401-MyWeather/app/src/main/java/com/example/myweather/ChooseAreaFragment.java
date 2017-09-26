@@ -1,6 +1,8 @@
 package com.example.myweather;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -42,6 +44,7 @@ public class ChooseAreaFragment extends Fragment {
     private ProgressDialog progressDialog;
     private TextView titleText;
     private Button buttonBack;
+    private Button buttonHelp;
     private ListView listView;
 
     // 数据
@@ -63,6 +66,7 @@ public class ChooseAreaFragment extends Fragment {
         View view = inflater.inflate(R.layout.frag_choose_area, container, false);
         titleText = (TextView) view.findViewById(R.id.textView_fca_title);
         buttonBack = (Button) view.findViewById(R.id.button_fca_back);
+        buttonHelp = (Button) view.findViewById(R.id.button_fca_hlep);
         listView = (ListView) view.findViewById(R.id.listView_fca_area);
         adapter = new ArrayAdapter<String>(getContext()
                 , android.R.layout.simple_list_item_1, dataList);
@@ -100,6 +104,15 @@ public class ChooseAreaFragment extends Fragment {
                 }
             }
         });
+        // help button
+        buttonHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://cdn.heweather.com/china-city-list.txt"));
+                startActivity(intent);
+            }
+        });
         // 开始加载数据
         queryProvinces();
     }
@@ -108,9 +121,9 @@ public class ChooseAreaFragment extends Fragment {
         titleText.setText("选择省");
         buttonBack.setVisibility(View.GONE);
         provinceList = DataSupport.findAll(Province.class);
-        if (provinceList.size()>0) {
+        if (provinceList.size() > 0) {
             dataList.clear();
-            for (Province province: provinceList) {
+            for (Province province : provinceList) {
                 dataList.add(province.getProvinceName());
             }
             adapter.notifyDataSetChanged();
@@ -126,7 +139,7 @@ public class ChooseAreaFragment extends Fragment {
         titleText.setText(selectedProvince.getProvinceName());
         buttonBack.setVisibility(View.VISIBLE);
         cityList = DataSupport.where("provinceid = ?", String.valueOf(selectedProvince.getId())).find(City.class);
-        if (cityList.size()>0) {
+        if (cityList.size() > 0) {
             dataList.clear();
             for (City city : cityList) {
                 dataList.add(city.getCityName());
@@ -136,7 +149,7 @@ public class ChooseAreaFragment extends Fragment {
             currentLevel = LEVEL_CITY;
         } else {
             int provinceCode = selectedProvince.getProvinceCode();
-            String address = API_URL+provinceCode;
+            String address = API_URL + provinceCode;
             queryFromServer(address, LEVEL_CITY);
         }
     }
@@ -145,10 +158,10 @@ public class ChooseAreaFragment extends Fragment {
         titleText.setText(selectedCity.getCityName());
         buttonBack.setVisibility(View.VISIBLE);
         countyList = DataSupport.where("cityid = ?", String.valueOf(selectedCity.getId())).find(County.class);
-        if (countyList.size()>0) {
+        if (countyList.size() > 0) {
             dataList.clear();
             for (County county : countyList) {
-                dataList.add("["+county.getWeatherId()+"]  "+county.getCountyName());
+                dataList.add("[" + county.getWeatherId() + "]  " + county.getCountyName());
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
@@ -156,7 +169,7 @@ public class ChooseAreaFragment extends Fragment {
         } else {
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
-            String address = API_URL+provinceCode+"/"+cityCode;
+            String address = API_URL + provinceCode + "/" + cityCode;
             queryFromServer(address, LEVEL_COUNTY);
         }
     }
@@ -213,7 +226,7 @@ public class ChooseAreaFragment extends Fragment {
                     @Override
                     public void run() {
                         closeProgressDialog();
-                        Toast.makeText(getContext(), "获取省市县列表失败\n"+address, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "获取省市县列表失败\n" + address, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
