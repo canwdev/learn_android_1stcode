@@ -1,0 +1,8 @@
+package com.example.myweather.util;
+
+public class Conf {
+    public static final String PREF_FILE_NAME = "all_settings";
+    public static final String PREF_COUNTY_NAME = "weatherId";
+    public static final String PREF_WEATHER_ID = "weatherId";
+    public static final String HEWEATHER_KEY = "74ac2716affa4279b5db3898be81c25d";
+}

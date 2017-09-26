@@ -2,6 +2,7 @@ package com.example.myweather;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.example.myweather.db.City;
 import com.example.myweather.db.County;
 import com.example.myweather.db.Province;
+import com.example.myweather.util.Conf;
 import com.example.myweather.util.HttpUtil;
 import com.example.myweather.util.Utility;
 
@@ -33,7 +35,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class ChooseAreaFragment extends Fragment {
-    public static final String API_URL = "http://guolin.tech/api/china/";
+    public static final String AREA_API_URL = "http://guolin.tech/api/china/";
 
     // 用于判定当前选择状态的
     public static final int LEVEL_PROVINCE = 0;
@@ -89,7 +91,13 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 } else if (currentLevel == LEVEL_COUNTY) {
                     String weatherId = countyList.get(i).getWeatherId();
-                    // Toast.makeText(getContext(), countyList.get(i).getCountyName()+": "+weatherId, Toast.LENGTH_SHORT).show();
+                    // 保存设置
+                    SharedPreferences.Editor editor = getContext().getSharedPreferences(Conf.PREF_FILE_NAME, getContext().MODE_PRIVATE).edit();
+                    editor.putString(Conf.PREF_COUNTY_NAME, countyList.get(i).getCountyName());
+                    editor.putString(Conf.PREF_WEATHER_ID, weatherId);
+                    editor.apply();
+                    Toast.makeText(getContext(), "set: "+weatherId, Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
                 }
             }
         });
@@ -130,7 +138,7 @@ public class ChooseAreaFragment extends Fragment {
             listView.setSelection(0);
             currentLevel = LEVEL_PROVINCE;
         } else {
-            String address = API_URL;
+            String address = AREA_API_URL;
             queryFromServer(address, LEVEL_PROVINCE);
         }
     }
@@ -149,7 +157,7 @@ public class ChooseAreaFragment extends Fragment {
             currentLevel = LEVEL_CITY;
         } else {
             int provinceCode = selectedProvince.getProvinceCode();
-            String address = API_URL + provinceCode;
+            String address = AREA_API_URL + provinceCode;
             queryFromServer(address, LEVEL_CITY);
         }
     }
@@ -169,7 +177,7 @@ public class ChooseAreaFragment extends Fragment {
         } else {
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
-            String address = API_URL + provinceCode + "/" + cityCode;
+            String address = AREA_API_URL + provinceCode + "/" + cityCode;
             queryFromServer(address, LEVEL_COUNTY);
         }
     }
