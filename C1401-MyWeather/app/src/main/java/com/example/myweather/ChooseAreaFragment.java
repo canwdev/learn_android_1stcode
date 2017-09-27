@@ -96,7 +96,10 @@ public class ChooseAreaFragment extends Fragment {
                     editor.putString(Conf.PREF_COUNTY_NAME, countyList.get(i).getCountyName());
                     editor.putString(Conf.PREF_WEATHER_ID, weatherId);
                     editor.apply();
-                    Toast.makeText(getContext(), "set: "+weatherId, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "set: "+weatherId, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    intent.putExtra("city_weather_id", weatherId);
+                    getActivity().setResult(getActivity().RESULT_OK, intent);
                     getActivity().finish();
                 }
             }

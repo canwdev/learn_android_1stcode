@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -114,14 +115,14 @@ public class WeatherActivity extends AppCompatActivity {
                 cityWeatherId = "city="+tempCityWeatherId;
                 requestWeather(cityWeatherId);
             } else {
-                Intent intent = new Intent(this, ChooseAreaActivity.class);
-                startActivity(intent);
                 weatherScrollView.setVisibility(View.INVISIBLE);
-                requestWeather(CITY_SAMPLE);
+                Intent intent = new Intent(WeatherActivity.this, ChooseAreaActivity.class);
+                // 去选择地区
+                startActivityForResult(intent, 1);
             }
         }
 
-
+        // 背景图检查
         String pictureUrl = prefAllSettings.getString(Conf.PREF_BG_URL, null);
         if (pictureUrl!=null) {
             Glide.with(this).load(pictureUrl).into(bgImage);
@@ -129,6 +130,7 @@ public class WeatherActivity extends AppCompatActivity {
             loadBgImage();
         }
 
+        // 下拉刷新动作
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -136,6 +138,7 @@ public class WeatherActivity extends AppCompatActivity {
             }
         });
 
+        // 打开抽屉按钮动作
         buttonOpenDrawer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -150,9 +153,10 @@ public class WeatherActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.item_settings:
-                        Intent iGoSettings = new Intent(WeatherActivity.this, SettingsActivity.class);
-                        startActivity(iGoSettings);
+                    case R.id.drawer_item_settings:
+                        Intent iGoSettings = new Intent(WeatherActivity.this, ChooseAreaActivity.class);
+                        // 去选择地区
+                        startActivityForResult(iGoSettings, 1);
                         break;
                     case R.id.drawer_item_github:
                         Intent iGoGithub = new Intent(Intent.ACTION_VIEW);
@@ -168,6 +172,21 @@ public class WeatherActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    // 接收更改地区的 Intent 返回值
+                    String rCityWeatherId = "city="+data.getStringExtra("city_weather_id");
+                    cityWeatherId = rCityWeatherId;
+                    requestWeather(rCityWeatherId);
+                }
+                break;
+            default:
+        }
+    }
+
 
     private void loadBgImage() {
         final String bingPicApiUrl = "http://guolin.tech/api/bing_pic";
@@ -209,9 +228,8 @@ public class WeatherActivity extends AppCompatActivity {
                             editor.putString(Conf.PREF_WEATHER_CACHE, responseText);
                             editor.apply();
                             showWeatherInfo(weather);
-                        } else {
-                            weatherScrollView.setVisibility(View.VISIBLE);
                         }
+                        weatherScrollView.setVisibility(View.VISIBLE);
                         swipeRefresh.setRefreshing(false);
                     }
                 });
