@@ -3,12 +3,19 @@ package com.example.myweather;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -36,6 +43,8 @@ public class WeatherActivity extends AppCompatActivity {
     // public static final String WEATHER_API_URL_SAMPLE = WEATHER_API_URL + CITY_SAMPLE + KEY;
     private String cityWeatherId = "city=CN101240213";
     // 各控件
+    private DrawerLayout mDrawerLayout;
+    private Button buttonOpenDrawer;
     private SwipeRefreshLayout swipeRefresh;
     private ImageView bgImage;
     private ScrollView weatherScrollView;
@@ -62,6 +71,8 @@ public class WeatherActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
         // 初始化各控件
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.weather_drawer);
+        buttonOpenDrawer = (Button) findViewById(R.id.button_drawer);
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.SwipeRefresh_weather);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary,R.color.colorAccent);
         bgImage = (ImageView) findViewById(R.id.imageView_bg);
@@ -122,6 +133,38 @@ public class WeatherActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 requestWeather(cityWeatherId);
+            }
+        });
+
+        buttonOpenDrawer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        // 设置抽屉内的点击事件
+        final NavigationView navigation = (NavigationView) findViewById(R.id.weather_drawer_navigation);
+        // navigation.setCheckedItem(R.id.item_settings);
+        navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.item_settings:
+                        Intent iGoSettings = new Intent(WeatherActivity.this, SettingsActivity.class);
+                        startActivity(iGoSettings);
+                        break;
+                    case R.id.drawer_item_github:
+                        Intent iGoGithub = new Intent(Intent.ACTION_VIEW);
+                        iGoGithub.setData(Uri.parse(Conf.GITHUB_ADDRESS));
+                        startActivity(iGoGithub);
+                        break;
+                    default:
+                        break;
+                }
+                //navigation.setCheckedItem(item.getItemId());
+                mDrawerLayout.closeDrawers();
+                return true;
             }
         });
     }
@@ -222,5 +265,15 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText(weather.suggestion.carWash.info);
         sportText.setText(weather.suggestion.sport.info);
         weatherScrollView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // 判断是否打开了抽屉，打开了则关闭，否则退出
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }
