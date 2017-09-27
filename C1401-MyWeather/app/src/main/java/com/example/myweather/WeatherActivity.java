@@ -12,7 +12,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +25,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.myweather.gson.Forecast;
 import com.example.myweather.gson.Weather;
+import com.example.myweather.service.UpdateWeatherService;
 import com.example.myweather.util.Conf;
 import com.example.myweather.util.HttpUtil;
 import com.example.myweather.util.Utility;
@@ -39,7 +39,7 @@ import okhttp3.Response;
 public class WeatherActivity extends AppCompatActivity {
 
     public static final String WEATHER_API_URL = "https://free-api.heweather.com/v5/weather?";
-    private static final String KEY = "&key=" + Conf.HEWEATHER_KEY;
+    public static final String KEY = "&key=" + Conf.HEWEATHER_KEY;
     private static final String CITY_SAMPLE = "city=CN101010100";
     // public static final String WEATHER_API_URL_SAMPLE = WEATHER_API_URL + CITY_SAMPLE + KEY;
     private String cityWeatherId = "city=CN101240213";
@@ -90,18 +90,19 @@ public class WeatherActivity extends AppCompatActivity {
         sportText = (TextView) findViewById(R.id.textView_sport);
 
         SharedPreferences prefAllSettings = getSharedPreferences(Conf.PREF_FILE_NAME, MODE_PRIVATE);
-        String tempCityWeatherId = prefAllSettings.getString(Conf.PREF_WEATHER_ID, null);
+        String setCityWeatherId = prefAllSettings.getString(Conf.PREF_WEATHER_ID, null);
 
-        String weatherCache = prefAllSettings.getString(Conf.PREF_WEATHER_CACHE, null);
+        String weatherCache = prefAllSettings.getString(Conf.PREF_WEATHER_SAVE, null);
         if (weatherCache!=null) {
             // 有缓存时直接解析天气数据
             Weather weather = Utility.handleWeatherResponse(weatherCache);
             // cityWeatherId = "city="+weather.basic.weatherId;
 
             // 检查默认地区设置是否一致
-            if (tempCityWeatherId != null) {
-                cityWeatherId = "city="+tempCityWeatherId;
-                if (!weather.basic.weatherId.equals(tempCityWeatherId)) {
+            if (setCityWeatherId != null) {
+                cityWeatherId = "city="+setCityWeatherId;
+                if (!weather.basic.weatherId.equals(setCityWeatherId)) {
+                    swipeRefresh.setRefreshing(true);
                     requestWeather(cityWeatherId);
                 } else {
                     showWeatherInfo(weather);
@@ -111,8 +112,9 @@ public class WeatherActivity extends AppCompatActivity {
             }
         } else {
             // 无缓存时去服务器查询天气
-            if (tempCityWeatherId != null) {
-                cityWeatherId = "city="+tempCityWeatherId;
+            if (setCityWeatherId != null) {
+                cityWeatherId = "city="+setCityWeatherId;
+                swipeRefresh.setRefreshing(true);
                 requestWeather(cityWeatherId);
             } else {
                 weatherScrollView.setVisibility(View.INVISIBLE);
@@ -180,6 +182,7 @@ public class WeatherActivity extends AppCompatActivity {
                     // 接收更改地区的 Intent 返回值
                     String rCityWeatherId = "city="+data.getStringExtra("city_weather_id");
                     cityWeatherId = rCityWeatherId;
+                    swipeRefresh.setRefreshing(true);
                     requestWeather(rCityWeatherId);
                 }
                 break;
@@ -187,7 +190,7 @@ public class WeatherActivity extends AppCompatActivity {
         }
     }
 
-
+    // 获取 Bing 每日一图地址，保存地址并设置背景
     private void loadBgImage() {
         final String bingPicApiUrl = "http://guolin.tech/api/bing_pic";
         HttpUtil.sendOkHttpRequest(bingPicApiUrl, new Callback() {
@@ -212,8 +215,9 @@ public class WeatherActivity extends AppCompatActivity {
         });
     }
 
+    // 更新天气，保存设置，更新界面
     private void requestWeather(String weatherId) {
-        final String weatherUrl = WEATHER_API_URL+weatherId+KEY;;
+        final String weatherUrl = WEATHER_API_URL+weatherId+KEY;
 
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
@@ -225,7 +229,7 @@ public class WeatherActivity extends AppCompatActivity {
                     public void run() {
                         if (weather != null && "ok".equals(weather.status)) {
                             SharedPreferences.Editor editor = getSharedPreferences(Conf.PREF_FILE_NAME, MODE_PRIVATE).edit();
-                            editor.putString(Conf.PREF_WEATHER_CACHE, responseText);
+                            editor.putString(Conf.PREF_WEATHER_SAVE, responseText);
                             editor.apply();
                             showWeatherInfo(weather);
                         }
@@ -283,6 +287,10 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText(weather.suggestion.carWash.info);
         sportText.setText(weather.suggestion.sport.info);
         weatherScrollView.setVisibility(View.VISIBLE);
+
+        // 启动后台天气自动更新服务
+        Intent intent = new Intent(this, UpdateWeatherService.class);
+        startService(intent);
     }
 
     @Override
