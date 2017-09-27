@@ -3,10 +3,9 @@ package com.example.myweather;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,9 +33,10 @@ public class WeatherActivity extends AppCompatActivity {
     public static final String WEATHER_API_URL = "https://free-api.heweather.com/v5/weather?";
     private static final String KEY = "&key=" + Conf.HEWEATHER_KEY;
     private static final String CITY_SAMPLE = "city=CN101010100";
-    public static final String WEATHER_API_URL_SAMPLE = WEATHER_API_URL + CITY_SAMPLE + KEY;
+    // public static final String WEATHER_API_URL_SAMPLE = WEATHER_API_URL + CITY_SAMPLE + KEY;
     private String cityWeatherId = "city=CN101240213";
     // 各控件
+    private SwipeRefreshLayout swipeRefresh;
     private ImageView bgImage;
     private ScrollView weatherScrollView;
     private TextView titleCityText;
@@ -62,6 +62,8 @@ public class WeatherActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
         // 初始化各控件
+        swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.SwipeRefresh_weather);
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary,R.color.colorAccent);
         bgImage = (ImageView) findViewById(R.id.imageView_bg);
         weatherScrollView = (ScrollView) findViewById(R.id.ScrollView_weather);
         titleCityText = (TextView) findViewById(R.id.textView_cityName);
@@ -76,23 +78,35 @@ public class WeatherActivity extends AppCompatActivity {
         sportText = (TextView) findViewById(R.id.textView_sport);
 
         SharedPreferences prefAllSettings = getSharedPreferences(Conf.PREF_FILE_NAME, MODE_PRIVATE);
-        String weatherCache = prefAllSettings.getString(Conf.PREF_WEATHER_CACHE, null);
         String tempCityWeatherId = prefAllSettings.getString(Conf.PREF_WEATHER_ID, null);
 
+        String weatherCache = prefAllSettings.getString(Conf.PREF_WEATHER_CACHE, null);
         if (weatherCache!=null) {
             // 有缓存时直接解析天气数据
             Weather weather = Utility.handleWeatherResponse(weatherCache);
-            showWeatherInfo(weather);
+            // cityWeatherId = "city="+weather.basic.weatherId;
+
+            // 检查默认地区设置是否一致
+            if (tempCityWeatherId != null) {
+                cityWeatherId = "city="+tempCityWeatherId;
+                if (!weather.basic.weatherId.equals(tempCityWeatherId)) {
+                    requestWeather(cityWeatherId);
+                } else {
+                    showWeatherInfo(weather);
+                }
+            } else {
+                showWeatherInfo(weather);
+            }
         } else {
             // 无缓存时去服务器查询天气
             if (tempCityWeatherId != null) {
                 cityWeatherId = "city="+tempCityWeatherId;
-                String url = WEATHER_API_URL+cityWeatherId+KEY;
-                requestWeather(url);
+                requestWeather(cityWeatherId);
             } else {
                 Intent intent = new Intent(this, ChooseAreaActivity.class);
                 startActivity(intent);
-                requestWeather(WEATHER_API_URL_SAMPLE);
+                weatherScrollView.setVisibility(View.INVISIBLE);
+                requestWeather(CITY_SAMPLE);
             }
         }
 
@@ -104,6 +118,12 @@ public class WeatherActivity extends AppCompatActivity {
             loadBgImage();
         }
 
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                requestWeather(cityWeatherId);
+            }
+        });
     }
 
     private void loadBgImage() {
@@ -130,8 +150,9 @@ public class WeatherActivity extends AppCompatActivity {
         });
     }
 
-    private void requestWeather(String weatherUrl) {
-        weatherScrollView.setVisibility(View.INVISIBLE);
+    private void requestWeather(String weatherId) {
+        final String weatherUrl = WEATHER_API_URL+weatherId+KEY;;
+
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -147,9 +168,8 @@ public class WeatherActivity extends AppCompatActivity {
                             showWeatherInfo(weather);
                         } else {
                             weatherScrollView.setVisibility(View.VISIBLE);
-                            Toast.makeText(WeatherActivity.this, "Get weather information failed"
-                                    , Toast.LENGTH_SHORT).show();
                         }
+                        swipeRefresh.setRefreshing(false);
                     }
                 });
             }
@@ -162,6 +182,7 @@ public class WeatherActivity extends AppCompatActivity {
                         weatherScrollView.setVisibility(View.VISIBLE);
                         Toast.makeText(WeatherActivity.this, "Get weather information failed"
                                 , Toast.LENGTH_SHORT).show();
+                        swipeRefresh.setRefreshing(false);
                     }
                 });
             }

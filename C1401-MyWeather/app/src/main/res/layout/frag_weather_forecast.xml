@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
-    android:background="#80000000"
+    android:background="@color/colorTransparentDark"
     android:orientation="vertical"
     android:theme="@style/Theme.AppCompat">
 
@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="Forecast"
+        android:textColor="@android:color/background_light"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -21,5 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp"></LinearLayout>
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"></LinearLayout>
 </LinearLayout>

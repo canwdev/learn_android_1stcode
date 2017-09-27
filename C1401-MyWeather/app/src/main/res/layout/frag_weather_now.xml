@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:text="00℃"
+        android:textColor="@android:color/background_light"
         android:textSize="56sp" />
 
     <TextView
