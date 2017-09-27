@@ -1,16 +1,22 @@
 package com.example.myweather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.myweather.gson.Forecast;
 import com.example.myweather.gson.Weather;
 import com.example.myweather.util.Conf;
@@ -31,6 +37,7 @@ public class WeatherActivity extends AppCompatActivity {
     public static final String WEATHER_API_URL_SAMPLE = WEATHER_API_URL + CITY_SAMPLE + KEY;
     private String cityWeatherId = "city=CN101240213";
     // 各控件
+    private ImageView bgImage;
     private ScrollView weatherScrollView;
     private TextView titleCityText;
     private TextView titleUpdateTimeText;
@@ -47,8 +54,15 @@ public class WeatherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
-
+        // 适配透明状态
+        if (Build.VERSION.SDK_INT >= 21) {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
         // 初始化各控件
+        bgImage = (ImageView) findViewById(R.id.imageView_bg);
         weatherScrollView = (ScrollView) findViewById(R.id.ScrollView_weather);
         titleCityText = (TextView) findViewById(R.id.textView_cityName);
         titleUpdateTimeText = (TextView) findViewById(R.id.textView_updateTime);
@@ -61,27 +75,59 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText = (TextView) findViewById(R.id.textView_carWash);
         sportText = (TextView) findViewById(R.id.textView_sport);
 
-        SharedPreferences prefWeatherInfo = PreferenceManager.getDefaultSharedPreferences(this);
-        String weatherString = prefWeatherInfo.getString("weather", null);
-        /*if (weatherString!=null) {
+        SharedPreferences prefAllSettings = getSharedPreferences(Conf.PREF_FILE_NAME, MODE_PRIVATE);
+        String weatherCache = prefAllSettings.getString(Conf.PREF_WEATHER_CACHE, null);
+        String tempCityWeatherId = prefAllSettings.getString(Conf.PREF_WEATHER_ID, null);
+
+        if (weatherCache!=null) {
             // 有缓存时直接解析天气数据
-            Weather weather = Utility.handleWeatherResponse(weatherString);
+            Weather weather = Utility.handleWeatherResponse(weatherCache);
             showWeatherInfo(weather);
         } else {
             // 无缓存时去服务器查询天气
-            requestWeather();
-        }*/
-
-        SharedPreferences prefWeatherId = getSharedPreferences(Conf.PREF_FILE_NAME, MODE_PRIVATE);
-        String tempCityWeatherId = prefWeatherId.getString(Conf.PREF_WEATHER_ID, null);
-        if (tempCityWeatherId != null) {
-            cityWeatherId = "city="+tempCityWeatherId;
-            String url = WEATHER_API_URL+cityWeatherId+KEY;
-            requestWeather(url);
-        } else {
-            requestWeather(WEATHER_API_URL_SAMPLE);
+            if (tempCityWeatherId != null) {
+                cityWeatherId = "city="+tempCityWeatherId;
+                String url = WEATHER_API_URL+cityWeatherId+KEY;
+                requestWeather(url);
+            } else {
+                Intent intent = new Intent(this, ChooseAreaActivity.class);
+                startActivity(intent);
+                requestWeather(WEATHER_API_URL_SAMPLE);
+            }
         }
 
+
+        String pictureUrl = prefAllSettings.getString(Conf.PREF_BG_URL, null);
+        if (pictureUrl!=null) {
+            Glide.with(this).load(pictureUrl).into(bgImage);
+        } else {
+            loadBgImage();
+        }
+
+    }
+
+    private void loadBgImage() {
+        final String bingPicApiUrl = "http://guolin.tech/api/bing_pic";
+        HttpUtil.sendOkHttpRequest(bingPicApiUrl, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String bingPicUrl = response.body().string();
+                SharedPreferences.Editor editor = getSharedPreferences(Conf.PREF_FILE_NAME, MODE_PRIVATE).edit();
+                editor.putString(Conf.PREF_BG_URL, bingPicUrl);
+                editor.apply();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(WeatherActivity.this).load(bingPicUrl).into(bgImage);
+                    }
+                });
+            }
+        });
     }
 
     private void requestWeather(String weatherUrl) {
@@ -95,9 +141,8 @@ public class WeatherActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (weather != null && "ok".equals(weather.status)) {
-                            SharedPreferences.Editor editor = PreferenceManager
-                                    .getDefaultSharedPreferences(WeatherActivity.this).edit();
-                            editor.putString("weather", responseText);
+                            SharedPreferences.Editor editor = getSharedPreferences(Conf.PREF_FILE_NAME, MODE_PRIVATE).edit();
+                            editor.putString(Conf.PREF_WEATHER_CACHE, responseText);
                             editor.apply();
                             showWeatherInfo(weather);
                         } else {
@@ -121,6 +166,7 @@ public class WeatherActivity extends AppCompatActivity {
                 });
             }
         });
+        loadBgImage();
     }
 
     private void showWeatherInfo(Weather weather) {
