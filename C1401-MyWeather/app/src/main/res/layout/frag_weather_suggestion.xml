@@ -14,7 +14,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:text="Suggestion"
+        android:text="@string/suggestion"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -32,10 +32,9 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Comfortable: " />
+                android:text="@string/comfortable" />
 
             <TextView
                 android:id="@+id/textView_comfort"
@@ -51,10 +50,9 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Car Washing: " />
+                android:text="@string/car_washing" />
 
             <TextView
                 android:id="@+id/textView_carWash"
@@ -69,10 +67,9 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sport: " />
+                android:text="@string/sport" />
 
             <TextView
                 android:id="@+id/textView_sport"

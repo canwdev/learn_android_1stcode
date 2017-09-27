@@ -26,9 +26,6 @@
             android:name=".ChooseAreaActivity"
             android:label="@string/select_area"
             android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/settings"></activity>
 
         <service
             android:name=".service.UpdateWeatherService"

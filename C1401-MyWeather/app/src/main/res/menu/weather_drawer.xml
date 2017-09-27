@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Tools">
+    <item android:title="@string/tools">
         <menu>
             <item
                 android:id="@+id/drawer_item_settings"
@@ -18,12 +17,12 @@
         </menu>
     </item>
 
-    <item android:title="About">
+    <item android:title="@string/about">
         <menu>
             <item
                 android:id="@+id/drawer_item_github"
-                android:icon="@drawable/ic_help_black_24dp"
-                android:title="Github" />
+                android:icon="@drawable/ic_code_black_24dp"
+                android:title="@string/github" />
         </menu>
     </item>
 </menu>
