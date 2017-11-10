@@ -22,6 +22,6 @@ public class BaseActivity extends AppCompatActivity{
     protected void onDestroy() {
         super.onDestroy();
         //随时随地优雅的退出，需要结合ActivityCollector使用
-        ActivityCollector.addActivity(this);
+        ActivityCollector.removeActivity(this);
     }
 }
